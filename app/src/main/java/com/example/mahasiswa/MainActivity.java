@@ -1,0 +1,37 @@
+package com.example.mahasiswa;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+    TextView tvResultNama;
+    String resultNama;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initComponents();
+
+        // untuk mendapatkan data dari activity sebelumnya, yaitu activity login.
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+            resultNama = extras.getString("result_nama");
+        tvResultNama.setText(resultNama);
+    }
+
+    private void initComponents() {
+        initComponents();
+
+        // untuk mendapatkan data dari activity sebelumnya, yaitu activity login.
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+            resultNama = extras.getString("result_nama");
+        tvResultNama.setText(resultNama);
+
+    }
+
+}
