@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mahasiswa.API.BaseAPIService;
+import com.example.mahasiswa.API.PrefManager;
 import com.example.mahasiswa.API.UtilsAPI;
 
 import org.json.JSONException;
@@ -32,22 +33,30 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog loading;
     Context Context;
     BaseAPIService ApiService;
+    PrefManager PrefManager;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PrefManager = new PrefManager(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
-        Context = this;
-        ApiService = UtilsAPI.getAPIService(); // mengambil yanga da pada folder API
-        initComponents();
+
+        if (PrefManager.getToken().equals("")){
+            setContentView(R.layout.activity_login);
+            Context = this;
+            ApiService = UtilsAPI.getAPIService(); // meng-init yang ada di package apihelper
+            initComponents();
+        }else {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void initComponents() {
-        username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -57,41 +66,41 @@ public class LoginActivity extends AppCompatActivity {
                 requestLogin();
             }
 
-            private void requestLogin(){
+            public void requestLogin(){
                 ApiService.loginRequest(username.getText().toString(), password.getText().toString())
                         .enqueue(new Callback<ResponseBody>() {
+
                             @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            public void onResponse(Call<ResponseBody> callback, Response<ResponseBody> response) {
                                 if (response.isSuccessful()){
-                                    loading.dismiss();
                                     try {
                                         JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                        if (jsonRESULTS.getString("error").equals("false")){
-                                            // Jika login berhasil maka data nama yang ada di response API
-                                            // akan diparsing ke activity selanjutnya.
-                                            Toast.makeText(Context, "BERHASIL LOGIN", Toast.LENGTH_SHORT).show();
-                                            String nama = jsonRESULTS.getJSONObject("username").getString("nama");
-                                            Intent intent = new Intent(Context, MainActivity.class);
-                                            intent.putExtra("result_nama", nama);
-                                            startActivity(intent);
-                                        } else {
-                                            // Jika login gagal
-                                            String error_message = jsonRESULTS.getString("error_msg");
-                                            Toast.makeText(Context, error_message, Toast.LENGTH_SHORT).show();
-                                        }
+                                        Toast.makeText(Context, "BERHASIL LOGIN", Toast.LENGTH_SHORT).show();
+                                        String token = "Bearer "+jsonRESULTS.getString("access_token");
+                                        PrefManager.saveToken(token);
+                                        Toast.makeText(Context, "Selamat Datang Mahasiswa", Toast.LENGTH_SHORT).show();
+                                        loading.dismiss();
+//                                Intent intent = new Intent(mContext, KelasDosenActivity.class);
+//                                startActivity(intent);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                } else {
+                                }
+
+                                else {
+
+                                    Toast.makeText(Context, "Username atau passwor salah" + username, Toast.LENGTH_SHORT).show();
+                                    Log.d("onResponse", "onResponse: " + response.message());
                                     loading.dismiss();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(LoginActivity.this, "Unable to reach server ", Toast.LENGTH_SHORT).show();
+                                Log.e("debug", "onFailure: ERROR > " + t.toString());
+                                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                                 loading.dismiss();
                             }
                         });
@@ -99,5 +108,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
 }
 
