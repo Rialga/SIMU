@@ -26,7 +26,5 @@ public class PrefManager {
         return sp.getString(SP_TOKEN, "");
     }
 
-
-
 }
 

@@ -75,16 +75,13 @@ public class LoginActivity extends AppCompatActivity {
                                 if (response.isSuccessful()){
                                     try {
                                         JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                        Toast.makeText(Context, "BERHASIL LOGIN", Toast.LENGTH_SHORT).show();
                                         String token = "Bearer "+jsonRESULTS.getString("access_token");
                                         PrefManager.saveToken(token);
-                                        Toast.makeText(Context, "Selamat Datang Mahasiswa", Toast.LENGTH_SHORT).show();
                                         loading.dismiss();
-//                                Intent intent = new Intent(mContext, KelasDosenActivity.class);
-//                                startActivity(intent);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
+                                        Intent intent = new Intent(Context, MainActivity.class);
+                                        startActivity(intent);
+
+                                    } catch (JSONException | IOException e) {
                                         e.printStackTrace();
                                     }
                                 }
