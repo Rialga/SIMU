@@ -1,7 +1,6 @@
 package com.example.mahasiswa;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.PipedReader;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -27,13 +27,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
+
     EditText username;
     EditText password;
     Button btnLogin;
     ProgressDialog loading;
-    Context Context;
+    android.content.Context Context;
     BaseAPIService ApiService;
-    PrefManager PrefManager;
+    com.example.mahasiswa.API.PrefManager PrefManager;
 
 
 
@@ -81,14 +82,17 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent = new Intent(Context, MainActivity.class);
                                         startActivity(intent);
 
-                                    } catch (JSONException | IOException e) {
+                                        startActivity(intent);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 }
 
                                 else {
 
-                                    Toast.makeText(Context, "Username atau passwor salah" + username, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Context, "Username atau passwor salah", Toast.LENGTH_SHORT).show();
                                     Log.d("onResponse", "onResponse: " + response.message());
                                     loading.dismiss();
                                 }
@@ -105,6 +109,4 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-
 }
-

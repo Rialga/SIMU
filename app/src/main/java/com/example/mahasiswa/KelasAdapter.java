@@ -12,33 +12,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ListKelasAdapter extends RecyclerView.Adapter<ListKelasAdapter.AdapterViewholder> {
+public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.AdapterViewholder>{
 
-    private JSONArray kelas;
-    public OnItemClickListener onItemClickListener;
+    private JSONArray datakelas;
+    public OnItemClickListener aksi;
 
-    public ListKelasAdapter(JSONArray data, OnItemClickListener listener) {
-        kelas = data;
-        onItemClickListener = listener;
+    public KelasAdapter(JSONArray data, OnItemClickListener listener) {
+        datakelas = data;
+        aksi = listener;
     }
 
     @NonNull
     @Override
     public AdapterViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.kelas_item, parent, false);
+        View view = layoutInflater.inflate(R.layout.item_kelas, parent, false);
         return new AdapterViewholder (view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterViewholder holder, int position) {
         try {
-            holder.nama_mk.setText(kelas.getJSONObject(position).getString("nama_mk"));
-            holder.ruangan.setText(kelas.getJSONObject(position).getString("ruang"));
-            holder.mulai.setText(kelas.getJSONObject(position).getString("mulai"));
-            holder.selesai.setText(kelas.getJSONObject(position).getString("selesai"));
-            holder.tanggal.setText(kelas.getJSONObject(position).getString("tanggal"));
-            holder.bind(kelas.getJSONObject(position), onItemClickListener);
+            holder.nama_mk.setText(datakelas.getJSONObject(position).getString("nama_mk"));
+            holder.ruang_ujian.setText(datakelas.getJSONObject(position).getString("ruangan"));
+            holder.mulai.setText(datakelas.getJSONObject(position).getString("mulai"));
+            holder.selesai.setText(datakelas.getJSONObject(position).getString("selesai"));
+            holder.tanggal_ujian.setText(datakelas.getJSONObject(position).getString("tanggal"));
+            holder.bind(datakelas.getJSONObject(position), aksi);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -48,19 +48,19 @@ public class ListKelasAdapter extends RecyclerView.Adapter<ListKelasAdapter.Adap
     @Override
     public int getItemCount() {
 
-        return kelas.length();
+        return datakelas.length();
     }
 
     public class AdapterViewholder extends RecyclerView.ViewHolder {
-        private TextView nama_mk, ruangan, mulai, selesai, tanggal;
+        private TextView nama_mk, ruang_ujian, mulai, selesai, tanggal_ujian;
 
         public AdapterViewholder(@NonNull View itemView) {
             super(itemView);
             nama_mk = itemView.findViewById(R.id.nama_mk);
-            ruangan = itemView.findViewById(R.id.ruangan);
+            ruang_ujian = itemView.findViewById(R.id.ruangan);
             mulai = itemView.findViewById(R.id.mulai);
             selesai = itemView.findViewById(R.id.selesai);
-            tanggal = itemView.findViewById(R.id.tanggal);
+            tanggal_ujian = itemView.findViewById(R.id.tanggal);
         }
 
         public void bind(final JSONObject item, final OnItemClickListener listener){

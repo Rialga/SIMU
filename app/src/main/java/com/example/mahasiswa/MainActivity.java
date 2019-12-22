@@ -1,10 +1,5 @@
 package com.example.mahasiswa;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +7,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mahasiswa.API.BaseAPIService;
 import com.example.mahasiswa.API.PrefManager;
@@ -30,29 +30,29 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    PrefManager PrefManager;
-    String accessToken;
-    BaseAPIService mApiService;
+    BaseAPIService baseApiService;
+    com.example.mahasiswa.API.PrefManager PrefManager;
     RecyclerView rvlistkelas;
-    RecyclerView.Adapter mAdapter;
+    RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-    JSONArray ujians;
-
-
+    JSONArray kelasdosen;
+    TextView titleListKelas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PrefManager = new PrefManager(this);
+
         if (PrefManager.getToken().equals("")){
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        } else{
+            logout();
+        } else {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-            accessToken = PrefManager.getToken();
-            mApiService = UtilsAPI.getAPIService();
-            requestListUjian();
+            baseApiService = UtilsAPI.getAPIService();
+            titleListKelas = findViewById(R.id.judul);
+            String token = PrefManager.getToken();
+
+            getClass(token);
         }
     }
 
@@ -66,54 +66,55 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
-        if(item.getItemId() == R.id.logout){
+        if(item.getItemId()==R.id.logout){
             PrefManager.saveToken("");
-            Toast.makeText(MainActivity.this, "Berhasil logout", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
+            logout();
         }
         return super.onOptionsItemSelected(item);
     }
 
-
-    public  void requestListUjian(){
-        mApiService.kelasRequset(accessToken).enqueue(new Callback<ResponseBody>() {
+    public void getClass(String token){
+        baseApiService.kelasRequset(token).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                     try {
-                        JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                        ujians = jsonRESULTS.getJSONArray("ujians");
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        kelasdosen = jsonObject.getJSONArray("ujians");
                         rvlistkelas = findViewById(R.id.rvlistkelas);
                         rvlistkelas.setHasFixedSize(true);
                         rvlistkelas.setLayoutManager(layoutManager);
-                        mAdapter = new ListKelasAdapter(ujians, new ListKelasAdapter.OnItemClickListener() {
+
+                        adapter = new KelasAdapter(kelasdosen, new KelasAdapter.OnItemClickListener() {
                             @Override
-                            public void onItemClick(JSONObject item){
+                            public void onItemClick(JSONObject item) {
                                 Intent intent = new Intent(MainActivity.this, BarcodeActivity.class);
                                 intent.putExtra("data", item.toString());
                                 startActivity(intent);
                             }
                         });
-//                        Toast.makeText(ListUjianActivity.this, ujians.toString(), Toast.LENGTH_LONG).show();
-                        rvlistkelas.setAdapter(mAdapter);
-                    } catch (JSONException | IOException e){
-                        Toast.makeText(MainActivity.this, "Your Session Expired", Toast.LENGTH_SHORT).show();
+                        rvlistkelas.setAdapter(adapter);
+                    } catch (JSONException | IOException e) {
+                        logout();
                         e.printStackTrace();
-                        PrefManager.saveToken("");
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
                     }
-                } else {
-                    Toast.makeText(MainActivity.this, "Failed to get data", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(MainActivity.this, "Failed to get data :(", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Server unreachable :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error with connection :(", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void logout(){
+        Toast.makeText(MainActivity.this, "Your session expired. You are now logged out.", Toast.LENGTH_SHORT).show();
+        PrefManager.saveToken("");
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         kelasdosen = jsonObject.getJSONArray("ujians");
 
-                        rvlistkelas = findViewById(R.id.rvlistkelas);
+                        rvlistkelas = findViewById(R.id.rvlistmahasiswa);
                         rvlistkelas.setHasFixedSize(true);
                         rvlistkelas.setLayoutManager(layoutManager);
 

@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="260dp"
         android:text="Ruangan :"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="60dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
         android:id="@+id/ruangan"
         android:layout_marginStart="325dp"
         android:text="D1.2"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="60dp"/>
 
     <TextView
         android:layout_width="wrap_content"

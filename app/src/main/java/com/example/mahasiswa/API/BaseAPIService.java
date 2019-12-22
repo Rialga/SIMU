@@ -6,6 +6,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface BaseAPIService {
 
@@ -14,11 +15,11 @@ public interface BaseAPIService {
     @POST("api/login/users")
     Call<ResponseBody> loginRequest(@Field("username") String username,
                                     @Field("password") String password);
+
     // List Kelas Mahasiswa
     @POST("api/kartu-ujian/kelasmhs")
-    Call<ResponseBody> kelasRequset (@Header("Authorization") String authToken);
-
-
-
+    Call<ResponseBody> kelasRequset(@Header("Authorization") String Token);
 
 }
+
+

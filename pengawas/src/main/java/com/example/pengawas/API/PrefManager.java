@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 public class PrefManager {
 
-    public static final String SP_MAHASISWA = "spMahasiswa";
+    public static final String SP_Pengawas = "spPengawas";
     private static final String SP_TOKEN = null;
 
 
@@ -13,7 +13,7 @@ public class PrefManager {
     private SharedPreferences.Editor spEditor;
 
     public PrefManager(Context context){
-        sp = context.getSharedPreferences(SP_MAHASISWA, Context.MODE_PRIVATE);
+        sp = context.getSharedPreferences(SP_Pengawas, Context.MODE_PRIVATE);
         spEditor = sp.edit();
     }
 
