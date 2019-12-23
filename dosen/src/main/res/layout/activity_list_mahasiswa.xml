@@ -74,8 +74,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="300dp"
-        android:onClick="scan"
-        android:text="Scan"
+        android:onClick="Scan"
+        android:text="scan"
         tools:ignore="OnClick" />
 
 </LinearLayout>
