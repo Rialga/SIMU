@@ -113,8 +113,9 @@ public class MainActivity extends AppCompatActivity {
     public void logout(){
         Toast.makeText(MainActivity.this, "Your session expired. You are now logged out.", Toast.LENGTH_SHORT).show();
         PrefManager.saveToken("");
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         startActivity(intent);
+        finish();
     }
 
 }
